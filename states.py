@@ -30,16 +30,15 @@ class MenuState(State):
     def update(this):
         #imposta il numero di volte al secondo per cui va chiamata
         #la funzione update. minimo 1 volta al secondo, massimo 999
-        this.tick = 999
-        this.vel = this.vel + 1
-        if this.vel > this.gravity:
-            this.tick += 20
-            this.vel = 0
-            if this.h < 20:
-                this.h = this.h + 1
-            else:
-                #return [nome classe] passa ad il prossimo stato
-                return FinalState("ciao")
+        this.tick = 10
+        # this.vel = this.vel + 1
+        # if this.vel > this.gravity:
+        #     this.vel = 0
+        if this.h < 20:
+            this.h = this.h + 1
+        else:
+            #return [nome classe] passa ad il prossimo stato
+            return FinalState("ciao")
         screen = "\n" * this.h
         screen = screen + "-" * 10
         #questa funzione è tipo print. stampa quello che gli passi

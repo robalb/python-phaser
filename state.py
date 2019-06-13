@@ -18,7 +18,7 @@ class State:
 
     def _update(this):
         millis = int(round(time.time() * 1000))
-        if not this.millis or (millis - this.millis) > 1000 - this.tick:
+        if not this.millis or (millis - this.millis) > 1000 / this.tick:
             this.millis = millis
             return this.update()
 
