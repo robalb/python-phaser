@@ -5,12 +5,11 @@ class Game:
         this.state = state()
 
     def update(this):
-        ret = this.state.update()
+        ret = this.state._update()
         if ret:
             this.state = ret
 
     def keyHandle(this, ch):
-        print(ch)
         ret = this.state.onEvent(ch)
         if ret:
             this.state = ret

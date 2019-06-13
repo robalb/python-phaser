@@ -6,11 +6,19 @@ class State:
         # this.game = game
         this.name = this.__class__.__name__
         this.oldScreen = ''
+        this.tick = 0
+        this.tickSpeed = 1
         print("initialized state",this.name)
         this.setup()
 
     def setup(this):
         pass
+
+    def _update(this):
+        this.tick += 1
+        if this.tick > this.tickSpeed:
+            this.tick = 0
+            return this.update()
 
     def update(this):
         pass
