@@ -1,6 +1,6 @@
 import msvcrt
 
-from states import InitialState
+from states import *
 from game import Game
 
 

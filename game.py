@@ -6,9 +6,13 @@ class Game:
         # this.state = State
 
     def update(this):
-        this.state.update()
+        ret = this.state.update()
+        if ret:
+            this.state = ret
 
     def keyHandle(this, ch):
         print(ch)
-        this.state = this.state.onEvent(ch)
-        this.state.trySetup()
+        ret = this.state.onEvent(ch)
+        if ret:
+            this.state = ret
+            this.state.trySetup()
