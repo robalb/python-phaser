@@ -1,9 +1,9 @@
 import os
 
 class State:
-    def __init__(this, game, data = {}):
+    def __init__(this, data = {}):
         this.data = data
-        this.game = game
+        # this.game = game
         this.name = this.__class__.__name__
         this.oldScreen = ''
         print("initialized state",this.name)
