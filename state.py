@@ -7,14 +7,9 @@ class State:
         this.name = this.__class__.__name__
         this.oldScreen = ''
         print("initialized state",this.name)
-        this.setupDone = False
+        this.setup()
 
-    def trySetup(this):
-        if not this.setupDone:
-            this.setup()
-            this.setupDone = True
-
-    def setup():
+    def setup(this):
         pass
 
     def update(this):

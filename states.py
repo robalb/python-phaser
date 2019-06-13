@@ -3,8 +3,11 @@ from state import State
 
 class FinalState(State):
 
+    def setup(this):
+        pass
+
     def update(this):
-        this.render(" game over ")
+        this.render(" game over "+ this.data)
 
 
 class MenuState(State):
@@ -21,7 +24,7 @@ class MenuState(State):
             if this.h < 20:
                 this.h = this.h + 1
             else:
-                return FinalState()
+                return FinalState("ciao")
         screen = "\n" * this.h
         screen = screen + "-" * 10
         this.render(screen)

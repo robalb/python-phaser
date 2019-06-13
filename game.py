@@ -3,7 +3,6 @@ from state import State
 class Game:
     def __init__(this, state):
         this.state = state()
-        # this.state = State
 
     def update(this):
         ret = this.state.update()
@@ -15,4 +14,3 @@ class Game:
         ret = this.state.onEvent(ch)
         if ret:
             this.state = ret
-            this.state.trySetup()
