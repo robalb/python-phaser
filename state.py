@@ -1,4 +1,5 @@
 import os
+import time
 
 class State:
     def __init__(this, data = {}):
@@ -6,8 +7,9 @@ class State:
         # this.game = game
         this.name = this.__class__.__name__
         this.oldScreen = ''
-        this.tick = 0
-        this.tickSpeed = 1
+        this.tick = 2
+        this.millis = False
+
         print("initialized state",this.name)
         this.setup()
 
@@ -15,9 +17,9 @@ class State:
         pass
 
     def _update(this):
-        this.tick += 1
-        if this.tick > this.tickSpeed:
-            this.tick = 0
+        millis = int(round(time.time() * 1000))
+        if not this.millis or (millis - this.millis) > 1000 - this.tick:
+            this.millis = millis
             return this.update()
 
     def update(this):

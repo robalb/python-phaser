@@ -28,18 +28,12 @@ class MenuState(State):
 
     #questa funzione viene chiamata un botto di volte al secondo
     def update(this):
-        #EN
-        #this is the tick delay of the update function
-        #setting this to 1 will result in maximum update speed
-        #increasing this will result in slower updates
-        #IT
-        #questo attributo imposta la velocità di aggiornamento di update()
-        #si a la massima velocità se impostata ad 1
-        #si ha velocità minori impostandola a quantità maggiori
-        this.tickSpeed = 1
+        #imposta il numero di volte al secondo per cui va chiamata
+        #la funzione update. minimo 1 volta al secondo, massimo 999
+        this.tick = 999
         this.vel = this.vel + 1
         if this.vel > this.gravity:
-            this.tickSpeed += 2
+            this.tick += 20
             this.vel = 0
             if this.h < 20:
                 this.h = this.h + 1
