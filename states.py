@@ -19,18 +19,21 @@ class MenuState(State):
     down=True
     right=True
     width = 80
+    #bisogna lasciare una riga vuota
+    #altrimenti la console va a capo e si perde la prima riga
     height = 23
+    paddleHeight = 5
     
     def genstr(this,p1,p2,x,y):
         width = this.width
         height = this.height
         a=[]
-        b=['.' for i in range(width)]
+        b=[' ' for i in range(width)]
         b.append('\n')
         st=''
         for i in range (height):
             a.append(b[:])
-        for i in range (5):
+        for i in range (this.paddleHeight):
             a[p1+i][0]='|'
             a[p2+i][width-1]='|'
         a[y][x]='o'
@@ -63,17 +66,29 @@ class MenuState(State):
     #questa funzione viene chiamata solo una volta, al momento
     #della inizializzazione dello stato
     def setup(this):
-        print("ciao")
+        #imposta la velocita di gioco a 20 tick al secondo
+        this.tick = 10
 
     #questa funzione viene chiamata un botto di volte al secondo
     def update(this):
-        this.logic()
+        # this.logic()
         screen=this.genstr(this.p1,this.p2,this.x,this.y)
         this.render(screen)
 
     #questa funzione viene chiamata quando un tasto viene schiacciato
     def onEvent(this, ch):
-        print(ch)
+        #player 1
+        if ch == 'w':
+            if this.p1 > 0: this.p1 -= 1
+        elif ch == 's':
+            if this.p1 < this.height-this.paddleHeight: this.p1 += 1
+        #player 2
+        if ch == 'up':
+            if this.p2 > 0: this.p2 -= 1
+        elif ch == 'down':
+            if this.p2 < this.height-this.paddleHeight: this.p2 += 1
+        #TODO: quit key
+
 
 
 class InitialState(State):

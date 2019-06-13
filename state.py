@@ -7,7 +7,7 @@ class State:
         # this.game = game
         this.name = this.__class__.__name__
         this.oldScreen = ''
-        this.tick = 2
+        this.tick = 20
         this.millis = False
         # print("initialized state",this.name)
         this.setup()
