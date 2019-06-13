@@ -18,21 +18,25 @@ class MenuState(State):
     y=0
     down=True
     right=True
+    width = 80
+    height = 23
     
     def genstr(this,p1,p2,x,y):
+        width = this.width
+        height = this.height
         a=[]
-        b=[' ' for i in range(80)]
+        b=['.' for i in range(width)]
         b.append('\n')
         st=''
-        for i in range (25):
+        for i in range (height):
             a.append(b[:])
         for i in range (5):
-            (a[p1+i])[0]='|'
-            (a[p2+i])[79]='|'
-        (a[y])[x]='o'
-        for i in range(25):
-            for k in range(81):
-                st+=(a[i])[k]
+            a[p1+i][0]='|'
+            a[p2+i][width-1]='|'
+        a[y][x]='o'
+        for i in range(height):
+            for k in range(width):
+                st+=a[i][k]
         return(st)
 
     def logic(this):
@@ -63,7 +67,7 @@ class MenuState(State):
 
     #questa funzione viene chiamata un botto di volte al secondo
     def update(this):
-        # this.logic()
+        this.logic()
         screen=this.genstr(this.p1,this.p2,this.x,this.y)
         this.render(screen)
 
