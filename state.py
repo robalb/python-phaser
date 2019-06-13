@@ -9,8 +9,7 @@ class State:
         this.oldScreen = ''
         this.tick = 2
         this.millis = False
-
-        print("initialized state",this.name)
+        # print("initialized state",this.name)
         this.setup()
 
     def setup(this):

@@ -14,8 +14,6 @@ class MenuState(State):
 
     #qua inizializzi tutte le variabili che ti servono
     h = 0
-    vel = 0
-    gravity = 1200
     #puoi anche generare metodi personalizzati. è importante però
     #che il primo parametro sia 'this'
     def myMethod(this, a, b):
@@ -31,9 +29,6 @@ class MenuState(State):
         #imposta il numero di volte al secondo per cui va chiamata
         #la funzione update. minimo 1 volta al secondo, massimo 999
         this.tick = 10
-        # this.vel = this.vel + 1
-        # if this.vel > this.gravity:
-        #     this.vel = 0
         if this.h < 20:
             this.h = this.h + 1
         else:
