@@ -3,11 +3,11 @@ import time
 
 class State:
     def __init__(this, data = {}):
-        this.data = data
+        this._receivedData = data
         # this.game = game
         this.name = this.__class__.__name__
         this.oldScreen = ''
-        this.tick = 2
+        this.tick = 20
         this.millis = False
         # print("initialized state",this.name)
         this.setup()
