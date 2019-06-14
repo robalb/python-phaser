@@ -2,6 +2,8 @@ from state import State
 import os
 
 class FinalState(State):
+    currentColor = 0
+    hexColors = ['a','b','c','d','e','f']
     asciiart="""
 
                      _______  _______  __   __  _______  
@@ -21,9 +23,19 @@ class FinalState(State):
 """
     def setup(this):
         this.winner = this._receivedData['winner']
-
+        this.tick=2
+        this.currentColor=0
+        
     def update(this):
-        this.render(this.asciiart+ "\n"+str(this.winner))
+        this.render(this.asciiart+ "\n                    Player "+str(this.winner) + ' won!'+'\n                    Press SPACE to go back to the Menu')
+        os.system("color 0" + this.hexColors[this.currentColor])
+        this.currentColor+=1
+        this.currentColor%=6
+
+    def onEvent(this, ch):
+        if ch == ' ':
+            return InitialState()
+
 
 class PointsState(State):
 
