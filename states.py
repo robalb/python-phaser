@@ -107,10 +107,7 @@ class SinglePlayerGameState(State):
             this.p2=18
         if this.x==this.width-2:
             this.right=False
-            if this.y>this.p2+4 or this.y<this.p2:
-                return(1)
-            else:
-                this.tick+=1
+            this.tick+=1
         elif this.x==1:
             this.right=True
             if this.y>this.p1+4 or this.y<this.p1:
@@ -149,12 +146,12 @@ class SinglePlayerGameState(State):
         if winner==2:
             return PointsState({'points':this.points})
         screen=this.genstr(this.p1,this.p2,this.x,this.y)
-        this.render(screen)        
+        this.render(screen)
     def onEvent(this, ch):
         #player 1
-        if ch == 'w':
+        if ch == 'up' or ch == 'w':
             if this.p1 > 0: this.p1 -= 1
-        elif ch == 's':
+        elif ch == 'down' or ch == 's':
             if this.p1 < this.height-this.paddleHeight: this.p1 += 1
 
 
