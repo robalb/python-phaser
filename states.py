@@ -37,7 +37,7 @@ class PointsState(State):
             return SinglePlayerGameState()
         this.i += 1
         screen = "\n" * 12
-        text = 'scores: ' + str(this.points)
+        text = 'score: ' + str(this.points)
         space = int((80 - len(text))/2)
         screen += " " * space  + text
         this.render(screen)
@@ -361,7 +361,4 @@ class InitialState(State):
     def onEvent(this, ch):
         if ch == " ":
             return MenuState()
-
-
-
 
