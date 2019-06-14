@@ -2,20 +2,59 @@ from state import State
 import os
 
 class FinalState(State):
+    asciiart="""
 
+                     _______  _______  __   __  _______  
+                    |       ||   _   ||  |_|  ||       | 
+                    |    ___||  |_|  ||       ||    ___| 
+                    |   | __ |       ||       ||   |___  
+                    |   ||  ||       ||       ||    ___| 
+                    |   |_| ||   _   || ||_|| ||   |___  
+                    |_______||__| |__||_|   |_||_______| 
+                     _______  __   __  _______  ______   
+                    |       ||  | |  ||       ||    _ |  
+                    |   _   ||  |_|  ||    ___||   | ||  
+                    |  | |  ||       ||   |___ |   |_||_ 
+                    |  |_|  ||       ||    ___||    __  |
+                    |       | |     | |   |___ |   |  | |
+                    |_______|  |___|  |_______||___|  |_|                                            
+"""
     def setup(this):
-        pass
+        this.winner = this._receivedData['winner']
 
     def update(this):
-        this.render(" game over "+ this.data)
+        this.render(this.asciiart+ "\n"+str(this.winner))
+
+class ScoreState(State):
+
+    i = 0
+    def setup(this):
+        this.playerScores = this._receivedData['scores']
+        this.tick = 1
+
+    def update(this):
+        score1 = this.playerScores[0]
+        score2 = this.playerScores[1]
+        if this.i == 2:
+            return MultiplayerGameState(this._receivedData)
+        if score1 == 5:
+            return FinalState({'winner':1})
+        elif score2 == 5:
+            return FinalState({'winner':2})
+        this.i += 1
+        screen = "\n" * 10
+        screen += " "*40
+        screen += str(score1) + "-" + str(score2)
+        this.render(screen)
 
 
-class MenuState(State):
-
+class MultiplayerGameState(State):
+    velx=1
+    vely=1
     p1=0
     p2=0
-    x=1
-    y=0
+    x=39
+    y=10
     down=True
     right=True
     width = 80
@@ -23,7 +62,7 @@ class MenuState(State):
     #altrimenti la console va a capo e si perde la prima riga
     height = 23
     paddleHeight = 5
-    
+    counter=0
     def genstr(this,p1,p2,x,y):
         width = this.width
         height = this.height
@@ -43,35 +82,50 @@ class MenuState(State):
         return(st)
 
     def logic(this):
-        if this.x==78:
+        if this.x==this.width-2:
             this.right=False
             if this.y>this.p2+4 or this.y<this.p2:
-                return(FinalState)
+                return(1)
+            else:
+                this.tick+=1
         elif this.x==1:
             this.right=True
             if this.y>this.p1+4 or this.y<this.p1:
-                return(FinalState)
+                return(2)
+            else:
+                this.tick+=1
         if this.right==True:
-            this.x+=1
+            this.x+=this.velx
         else:
-            this.x-=1
-        if this.y==24:
-            this.right=False
+            this.x-=this.velx
+        if this.y==this.height-1:
+            this.down=False
         elif this.y==0:
             this.down=True
         if this.down==True:
-            this.x+=1
+            this.y+=this.vely
         else:
-            this.x-=1
+            this.y-=this.vely
+        return False
     #questa funzione viene chiamata solo una volta, al momento
     #della inizializzazione dello stato
     def setup(this):
         #imposta la velocita di gioco a 20 tick al secondo
+        this.playerScores = this._receivedData['scores']
         this.tick = 10
+        this.velx=1
+        this.vely=1
+        this.p1=0
+        this.p2=0
+        this.x=39
+        this.y=10
 
     #questa funzione viene chiamata un botto di volte al secondo
     def update(this):
-        this.logic()
+        winner = this.logic()
+        if winner:
+            this.playerScores[winner-1] += 1
+            return ScoreState({'scores':this.playerScores})
         screen=this.genstr(this.p1,this.p2,this.x,this.y)
         this.render(screen)
 
@@ -88,6 +142,7 @@ class MenuState(State):
         elif ch == 'down':
             if this.p2 < this.height-this.paddleHeight: this.p2 += 1
         #TODO: quit key
+
 
 
 
@@ -141,9 +196,8 @@ class InitialState(State):
         this.render(screen+btText)
 
     def onEvent(this, ch):
-        print(ch)
         if ch == " ":
-            return MenuState()
+            return MultiplayerGameState({'scores':[0,0]})
 
 
 

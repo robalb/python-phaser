@@ -3,7 +3,7 @@ import time
 
 class State:
     def __init__(this, data = {}):
-        this.data = data
+        this._receivedData = data
         # this.game = game
         this.name = this.__class__.__name__
         this.oldScreen = ''
