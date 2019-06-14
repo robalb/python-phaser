@@ -27,7 +27,10 @@ class FinalState(State):
         this.currentColor=0
         
     def update(this):
-        this.render(this.asciiart+ "\n                    Player "+str(this.winner) + ' won!'+'\n                    Press SPACE to go back to the Menu')
+        screen = this.asciiart
+        screen += "\n                    Player "+str(this.winner) + ' won!'
+        screen += '\n                    Press SPACE to go back to the Menu'
+        this.render(screen)
         os.system("color 0" + this.hexColors[this.currentColor])
         this.currentColor+=1
         this.currentColor%=6
