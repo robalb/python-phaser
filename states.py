@@ -17,13 +17,30 @@ class FinalState(State):
                     |  | |  ||       ||   |___ |   |_||_ 
                     |  |_|  ||       ||    ___||    __  |
                     |       | |     | |   |___ |   |  | |
-                    |_______|  |___|  |_______||___|  |_|                                            
+                    |_______|  |___|  |_______||___|  |_|
 """
     def setup(this):
         this.winner = this._receivedData['winner']
 
     def update(this):
         this.render(this.asciiart+ "\n"+str(this.winner))
+
+class PointsState(State):
+
+    i = 0
+    def setup(this):
+        this.points = this._receivedData['points']
+        this.tick = 1
+
+    def update(this):
+        if this.i == 2:
+            return SinglePlayerGameState()
+        this.i += 1
+        screen = "\n" * 12
+        text = 'scores: ' + str(this.points)
+        space = int((80 - len(text))/2)
+        screen += " " * space  + text
+        this.render(screen)
 
 class ScoreState(State):
 
@@ -42,10 +59,104 @@ class ScoreState(State):
         elif score2 == 5:
             return FinalState({'winner':2})
         this.i += 1
-        screen = "\n" * 10
-        screen += " "*40
-        screen += str(score1) + "-" + str(score2)
+        screen = "\n" * 12
+        text = str(score1) + " - " + str(score2)
+        space = int((80 - len(text))/2)
+        screen += " " * space  + text
         this.render(screen)
+
+
+class SinglePlayerGameState(State):
+    velx=1
+    vely=1
+    p1=0
+    p2=0
+    x=39
+    y=10
+    points=0
+    down=True
+    right=True
+    width = 80
+    #bisogna lasciare una riga vuota
+    #altrimenti la console va a capo e si perde la prima riga
+    height = 23
+    paddleHeight = 5
+    counter=0
+    def genstr(this,p1,p2,x,y):
+        width = this.width
+        height = this.height
+        a=[]
+        b=[' ' for i in range(width)]
+        b.append('\n')
+        st=''
+        for i in range (height):
+            a.append(b[:])
+        for i in range (this.paddleHeight):
+            a[p1+i][0]='|'
+            a[p2+i][width-1]='|'
+        a[y][x]='o'
+        for i in range(height):
+            for k in range(width):
+                st+=a[i][k]
+        return(st)
+
+    def logic(this):
+        if this.y<18:
+            this.p2=this.y
+        else:
+            this.p2=18
+        if this.x==this.width-2:
+            this.right=False
+            if this.y>this.p2+4 or this.y<this.p2:
+                return(1)
+            else:
+                this.tick+=1
+        elif this.x==1:
+            this.right=True
+            if this.y>this.p1+4 or this.y<this.p1:
+                return(2)
+            else:
+                this.tick+=1
+                this.points+=1
+        if this.right==True:
+            this.x+=this.velx
+        else:
+            this.x-=this.velx
+        if this.y==this.height-1:
+            this.down=False
+        elif this.y==0:
+            this.down=True
+        if this.down==True:
+            this.y+=this.vely
+        else:
+            this.y-=this.vely
+        return False
+    #questa funzione viene chiamata solo una volta, al momento
+    #della inizializzazione dello stato
+    def setup(this):
+        #imposta la velocita di gioco a 20 tick al secondo
+        this.tick = 10
+        this.velx=1
+        this.vely=1
+        this.p1=0
+        this.p2=0
+        this.x=39
+        this.y=10
+
+    #questa funzione viene chiamata un botto di volte al secondo
+    def update(this):
+        winner = this.logic()
+        if winner==2:
+            return PointsState({'points':this.points})
+        screen=this.genstr(this.p1,this.p2,this.x,this.y)
+        this.render(screen)        
+    def onEvent(this, ch):
+        #player 1
+        if ch == 'w':
+            if this.p1 > 0: this.p1 -= 1
+        elif ch == 's':
+            if this.p1 < this.height-this.paddleHeight: this.p1 += 1
+
 
 
 class MultiplayerGameState(State):
@@ -192,7 +303,8 @@ class MenuState(State):
 
         if ch == " " or ch == "enter":
             if this.selected==0:
-                print(ch)
+                return SinglePlayerGameState()
+                # return ScoreState({'scores':[0,0]})
             if this.selected==1:
                 return MultiplayerGameState({'scores':[0,0]})
             if this.selected==2:
