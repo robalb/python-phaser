@@ -144,6 +144,60 @@ class MultiplayerGameState(State):
         #TODO: quit key
 
 
+class MenuState(State):
+    opt1=[
+        'SINGLE PLAYER',
+        'MULTI PLAYER',
+        'QUIT GAME'
+        ]
+
+    descr=[
+        'Press SPACE to start, use arow up/down to move ',
+        'Press SPACE to start, use ARROW UP / DOWN or W / S to move ',
+        ''
+        ]
+    selected=0
+    def setup(this):
+        this.render("")
+        this.tick = 20
+
+    def update(this):
+        screen = '\n' * 9
+        space = ' ' * 29
+        for i in range(len(this.opt1)):
+            
+            if i == this.selected:
+                screen += space + ">>"
+            else:
+                screen += space + "  "
+            screen += ' ' + this.opt1[i] + '\n\n'
+            
+        desc = this.descr[this.selected]
+        spaces = int((80 - len(desc))/2)
+        screen += '\n' * 6 + ' '*spaces + desc
+            
+        this.render(screen)
+
+    def onEvent(this, ch):
+        if ch=='up':
+            if this.selected > 0:
+                this.selected-=1
+            else:
+                this.selected=2
+        if ch=='down':
+            if this.selected < 2:
+                this.selected+=1
+            else:
+                this.selected=0
+
+        if ch == " " or ch == "enter":
+            if this.selected==0:
+                print(ch)
+            if this.selected==1:
+                return MultiplayerGameState({'scores':[0,0]})
+            if this.selected==2:
+                raise SystemExit
+        
 
 
 class InitialState(State):
@@ -197,7 +251,7 @@ class InitialState(State):
 
     def onEvent(this, ch):
         if ch == " ":
-            return MultiplayerGameState({'scores':[0,0]})
+            return MenuState()
 
 
 
