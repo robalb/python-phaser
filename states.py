@@ -1,5 +1,5 @@
 from state import State
-
+import os
 
 class FinalState(State):
 
@@ -71,7 +71,7 @@ class MenuState(State):
 
     #questa funzione viene chiamata un botto di volte al secondo
     def update(this):
-        # this.logic()
+        this.logic()
         screen=this.genstr(this.p1,this.p2,this.x,this.y)
         this.render(screen)
 
@@ -93,11 +93,52 @@ class MenuState(State):
 
 class InitialState(State):
 
+    asciiArt3 = """
+             _______  __   __  _______  __   __  _______  __    _ 
+            |       ||  | |  ||       ||  | |  ||       ||  |  | |
+            |    _  ||  |_|  ||_     _||  |_|  ||   _   ||   |_| |
+            |   |_| ||       |  |   |  |       ||  | |  ||       |
+            |    ___||_     _|  |   |  |       ||  |_|  ||  _    |
+            |   |      |   |    |   |  |   _   ||       || | |   |
+            |___|      |___|    |___|  |__| |__||_______||_|  |__|
+                     _______  _______  __    _  _______           
+                    |       ||       ||  |  | ||       |          
+                    |    _  ||   _   ||   |_| ||    ___|          
+                    |   |_| ||  | |  ||       ||   | __           
+                    |    ___||  |_|  ||  _    ||   ||  |          
+                    |   |    |       || | |   ||   |_| |          
+                    |___|    |_______||_|  |__||_______|          
+    """
+
+    on = True
+    color = True
+    currentColor = 0
+    hexColors = ['a','b','c','d','e','f']
+
+    def setup(this):
+        this.tick = 2
+
     def update(this):
-        screen = "---------\n" * 10
-        screen = screen + " premi spazio"
-        screen = screen + "----------\n" * 10
-        this.render(screen)
+        screen = "\n" * 3
+        screen += this.asciiArt3
+        if this.on:
+            if this.color:
+                this.color = False
+                this.currentColor +=1
+                if this.currentColor ==  len(this.hexColors):
+                    this.currentColor = 0
+            else:
+                this.color = True
+            os.system("color 0" + this.hexColors[this.currentColor])
+            this.on = False
+            text = "PRESS SPACE TO START  "
+        else:
+            this.on = True
+            text = "  "
+
+        btText = "\n" * 4 + " " * int((80 - len(text)) /2)
+        btText += text
+        this.render(screen+btText)
 
     def onEvent(this, ch):
         print(ch)
