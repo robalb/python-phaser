@@ -35,6 +35,7 @@ class FinalState(State):
 
     def keyPress(this, ch):
         if ch == ' ':
+            this.game.note(4000,20)
             this.game.start(InitialState)
 
 
@@ -116,12 +117,15 @@ class SinglePlayerGameState(State):
             this.p2=18
         if this.x==this.width-2:
             this.right=False
+            this.game.note(4000,20)
             this.game.tick+=1
         elif this.x==1:
             this.right=True
             if this.y>this.p1+4 or this.y<this.p1:
+                this.game.note(2000,200)
                 return(2)
             else:
+                this.game.note(4000,20)
                 this.game.tick+=1
                 this.points+=1
         if this.right==True:
@@ -130,8 +134,10 @@ class SinglePlayerGameState(State):
             this.x-=this.velx
         if this.y==this.height-1:
             this.down=False
+            this.game.note(4000,20)
         elif this.y==0:
             this.down=True
+            this.game.note(4000,20)
         if this.down==True:
             this.y+=this.vely
         else:
@@ -197,14 +203,18 @@ class MultiplayerGameState(State):
         if this.x==this.width-2:
             this.right=False
             if this.y>this.p2+4 or this.y<this.p2:
+                this.game.note(2000,200)
                 return(1)
             else:
+                this.game.note(4000,20)
                 this.game.tick+=1
         elif this.x==1:
             this.right=True
             if this.y>this.p1+4 or this.y<this.p1:
+                this.game.note(2000,200)
                 return(2)
             else:
+                this.game.note(4000,20)
                 this.game.tick+=1
         if this.right==True:
             this.x+=this.velx
@@ -212,8 +222,10 @@ class MultiplayerGameState(State):
             this.x-=this.velx
         if this.y==this.height-1:
             this.down=False
+            this.game.note(4000,20)
         elif this.y==0:
             this.down=True
+            this.game.note(4000,20)
         if this.down==True:
             this.y+=this.vely
         else:
@@ -289,25 +301,27 @@ class MenuState(State):
         this.game.render(screen)
 
     def keyPress(this, ch):
-        if ch=='up':
+        if ch in ('up', 'w', 'k'):
+            this.game.note(4000,20)
             if this.selected > 0:
                 this.selected-=1
             else:
                 this.selected=2
-        if ch=='down':
+        if ch in ('down', 's', 'j'):
+            this.game.note(4000,20)
             if this.selected < 2:
                 this.selected+=1
             else:
                 this.selected=0
 
-        if ch == " " or ch == "enter":
+        if ch in (' ', 'enter', 'right', 'd', 'l'):
+            this.game.note(4000, 20)
             if this.selected==0:
                 this.game.start(SinglePlayerGameState)
             if this.selected==1:
                 this.game.start(MultiplayerGameState, {'scores':[0,0]} )
             if this.selected==2:
                 this.game.stop()
-        
 
 
 class InitialState(State):
@@ -360,6 +374,7 @@ class InitialState(State):
         this.game.render(screen+btText)
 
     def keyPress(this, ch):
-        if ch == " ":
+        if ch == " " or ch == "enter":
+            this.game.note(4000,20)
             this.game.start(MenuState)
 

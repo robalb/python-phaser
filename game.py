@@ -1,6 +1,7 @@
 import msvcrt
 import os
 import time
+import winsound
 from state import State
 
 class Game:
@@ -15,6 +16,10 @@ class Game:
         80: "down",
         75: "left",
         77: "right"
+        }
+    _keys = {
+        13: 'enter',
+        27: 'esc'
         }
     #the current game tick speed
     tick = 0
@@ -51,6 +56,9 @@ class Game:
         this._isRunning = False
         this.state = False
         raise SystemExit
+
+    def note(this, note, t):
+        winsound.Beep(note, t)
 
     #set the game color using the windows command 'color'
     def setColor(this, color):
@@ -100,5 +108,7 @@ class Game:
         else:
             if asc == 224:
                 this._isArrow = True
+            elif asc in this._keys.keys():
+                this.state.keyPress(this._keys[asc])
             else:
                 this.state.keyPress(chr(asc))

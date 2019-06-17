@@ -13,5 +13,3 @@ options = {
 game = Game(options)
 #start the InitialState game state
 game.start(InitialState)
-
-
