@@ -1,7 +1,10 @@
 import msvcrt
+from ctypes import *
 import os
 import time
 import winsound
+from cursorHide import hideCursor, showCursor
+from cursorMove import printAt
 
 #
 # this is a state-based, lightweight game library
@@ -14,6 +17,7 @@ import winsound
 # - note(frequency, duration)
 # - clear()
 # - render(string)
+# - printAt(x, y, string)
 #
 # the stateClass passed as parameter for the game.start method should have
 # the following methods:
@@ -52,6 +56,8 @@ class Game:
         if title: os.system("title " + title)
         #set the window size to the current game size
         os.system("mode con: cols="+str(this.width)+" lines="+str(this.height))
+        #hide the cursor to improve animations
+        hideCursor()
 
     #method called to start a state or unpause the game
     #param: the first state class
@@ -73,6 +79,7 @@ class Game:
     def stop(this):
         this._isRunning = False
         this.state = False
+        showCursor()
         raise SystemExit
 
     #plays a note with the given frequency and time.
@@ -102,6 +109,10 @@ class Game:
             this.clear()
             print(screen)
             this._screenBuffer = screen
+
+    def printAt(this, x, y, text):
+        printAt(x, y, text)
+
 
 
     #internal method that executes on loop, and

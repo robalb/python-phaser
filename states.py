@@ -52,7 +52,7 @@ class PointsState(State):
         this.i += 1
         screen = "\n" * 12
         text = 'score: ' + str(this.points)
-        space = int((this.game.width - len(text))/2)
+        space = (this.game.width - len(text)) // 2
         screen += " " * space  + text
         this.game.render(screen)
 
@@ -75,7 +75,7 @@ class ScoreState(State):
         this.i += 1
         screen = "\n" * 12
         text = str(score1) + " - " + str(score2)
-        space = int((this.game.width - len(text))/2)
+        space = (this.game.width - len(text)) // 2
         screen += " " * space  + text
         this.game.render(screen)
 
@@ -92,25 +92,35 @@ class SinglePlayerGameState(State):
     right=True
     paddleHeight = 5
     counter=0
-    def genstr(this,p1,p2,x,y):
-        width = this.width
-        height = this.height
-        a=[]
-        b=[' ' for i in range(width)]
-        b.append('\n')
-        st=''
-        for i in range (height):
-            a.append(b[:])
-        for i in range (this.paddleHeight):
-            a[p1+i][0]='|'
-            a[p2+i][width-1]='|'
-        a[y][x]='o'
-        for i in range(height):
-            for k in range(width):
-                st+=a[i][k]
-        return(st)
+    boxChr = '\u2588'
+    ballChr = '\u25CF'
+
+    def updateScreen(this,p1,p2,x,y):
+        #print the ball
+        this.game.printAt(y, x, "")
+        print(this.ballChr)
+        #print the paddles, clearing the old boxes
+        for i in range (0, this.height):
+            #p1
+            this.game.printAt(i, 0, "")
+            if i >= p1 and i < (p1 + this.paddleHeight):
+                print(this.boxChr)
+            else:
+                print(' ')
+            #p2
+            this.game.printAt(i, this.width-1, "")
+            if i >= p2 and i < (p2 + this.paddleHeight):
+                print(this.boxChr)
+            else:
+                print(' ')
+
+
+    def clearBall(this, x, y):
+        this.game.printAt(y, x, " ")
+
 
     def logic(this):
+        this.clearBall(this.x, this.y)
         if this.y<18:
             this.p2=this.y
         else:
@@ -153,14 +163,15 @@ class SinglePlayerGameState(State):
         this.height = this.game.height - 2
         #imposta la velocita di gioco a 20 tick al secondo
         this.game.tick = 10
+        this.game.clear()
 
     #questa funzione viene chiamata un botto di volte al secondo
     def update(this):
         winner = this.logic()
         if winner==2:
             this.game.start(PointsState, {'points':this.points})
-        screen=this.genstr(this.p1,this.p2,this.x,this.y)
-        this.game.render(screen)
+        this.updateScreen(this.p1,this.p2,this.x,this.y)
+
     def keyPress(this, ch):
         #player 1
         if ch == 'up' or ch == 'w':
@@ -181,25 +192,34 @@ class MultiplayerGameState(State):
     right=True
     paddleHeight = 5
     counter=0
-    def genstr(this,p1,p2,x,y):
-        width = this.width
-        height = this.height
-        a=[]
-        b=[' ' for i in range(width)]
-        b.append('\n')
-        st=''
-        for i in range (height):
-            a.append(b[:])
-        for i in range (this.paddleHeight):
-            a[p1+i][0]='|'
-            a[p2+i][width-1]='|'
-        a[y][x]='o'
-        for i in range(height):
-            for k in range(width):
-                st+=a[i][k]
-        return(st)
+    boxChr = '\u2588'
+    ballChr = '\u25CF'
+
+    def updateScreen(this,p1,p2,x,y):
+        #print the ball
+        this.game.printAt(y, x, "")
+        print(this.ballChr)
+        #print the paddles, clearing the old boxes
+        for i in range (0, this.height):
+            #p1
+            this.game.printAt(i, 0, "")
+            if i >= p1 and i < (p1 + this.paddleHeight):
+                print(this.boxChr)
+            else:
+                print(' ')
+            #p2
+            this.game.printAt(i, this.width-1, "")
+            if i >= p2 and i < (p2 + this.paddleHeight):
+                print(this.boxChr)
+            else:
+                print(' ')
+
+
+    def clearBall(this, x, y):
+        this.game.printAt(y, x, " ")
 
     def logic(this):
+        this.clearBall(this.x, this.y)
         if this.x==this.width-2:
             this.right=False
             if this.y>this.p2+4 or this.y<this.p2:
@@ -241,6 +261,7 @@ class MultiplayerGameState(State):
         #imposta la velocita di gioco a 20 tick al secondo
         this.playerScores = this._receivedData['scores']
         this.game.tick = 10
+        this.game.clear()
 
     #questa funzione viene chiamata un botto di volte al secondo
     def update(this):
@@ -248,8 +269,8 @@ class MultiplayerGameState(State):
         if winner:
             this.playerScores[winner-1] += 1
             this.game.start(ScoreState, {'scores':this.playerScores})
-        screen=this.genstr(this.p1,this.p2,this.x,this.y)
-        this.game.render(screen)
+        this.updateScreen(this.p1,this.p2,this.x,this.y)
+        # this.game.render()
 
     #questa funzione viene chiamata quando un tasto viene schiacciato
     def keyPress(this, ch):
@@ -295,7 +316,7 @@ class MenuState(State):
             screen += ' ' + this.opt1[i] + '\n\n'
             
         desc = this.descr[this.selected]
-        spaces = int((this.game.width - len(desc))/2)
+        spaces = (this.game.width - len(desc)) // 2
         screen += '\n' * 6 + ' '*spaces + desc
             
         this.game.render(screen)
@@ -369,7 +390,7 @@ class InitialState(State):
             this.on = True
             text = "  "
 
-        btText = "\n" * 4 + " " * int((this.game.width - len(text)) /2)
+        btText = "\n" * 4 + " " * ( (this.game.width - len(text))  // 2)
         btText += text
         this.game.render(screen+btText)
 

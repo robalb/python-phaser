@@ -2,6 +2,8 @@
 from states import *
 from game import Game
 
+
+
 #note: widths greater that 80 are only allowed in windows 10
 options = {
         'width': 80,
