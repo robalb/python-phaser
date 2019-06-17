@@ -58,6 +58,10 @@ class Game:
         raise SystemExit
 
     def note(this, note, t):
+        if t < this._millis:
+            this._millis -= t
+        else:
+            this._millis = 1
         winsound.Beep(note, t)
 
     #set the game color using the windows command 'color'
