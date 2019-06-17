@@ -26,11 +26,11 @@ class Game:
     def __init__(this, options = { 'width': 80, 'height': 25, 'tick': 25 }):
         this.width, this.height, this.tick = options.values()
 
-    #method called to start or unpause the game
+    #method called to start a state or unpause the game
     #param: the first state class
-    def start(this, state = False):
+    def start(this, state = False, data = {}):
         if state:
-            this.state = state()
+            this.state = state(this, data)
         elif not this.state:
             return
         this._isRunning = True
@@ -44,6 +44,9 @@ class Game:
         this.state = False
         raise SystemExit
 
+
+    def setColor(this, color):
+        os.system("color "+color)
 
     def clear(this):
         os.system("cls")
@@ -76,16 +79,12 @@ class Game:
 
 
     #method that controls the amount of times the update method of the current
-    #state can be called
+    #state can be called, and call it
     def _update(this):
         millis = int(round(time.time() * 1000))
         if not this._millis or (millis - this._millis) > 1000 / this.tick:
             this._millis = millis
-            ret = this.state.update()
-            if ret:
-                this.state = ret
+            this.state.update()
 
     def _keyPress(this, ch):
-        ret = this.state.onEvent(ch)
-        if ret:
-            this.state = ret
+        this.state.onEvent(ch)

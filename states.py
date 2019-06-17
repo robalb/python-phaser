@@ -1,5 +1,4 @@
 from state import State
-import os
 
 class FinalState(State):
     currentColor = 0
@@ -23,21 +22,21 @@ class FinalState(State):
 """
     def setup(this):
         this.winner = this._receivedData['winner']
-        this.tick=2
+        this.game.tick=2
         this.currentColor=0
         
     def update(this):
         screen = this.asciiart
         screen += "\n                    Player "+str(this.winner) + ' won!'
         screen += '\n                    Press SPACE to go back to the Menu'
-        this.render(screen)
-        os.system("color 0" + this.hexColors[this.currentColor])
+        this.game.render(screen)
+        this.game.setColor("0" + this.hexColors[this.currentColor])
         this.currentColor+=1
         this.currentColor%=6
 
     def onEvent(this, ch):
         if ch == ' ':
-            return InitialState()
+            this.game.start(InitialState)
 
 
 class PointsState(State):
@@ -45,40 +44,40 @@ class PointsState(State):
     i = 0
     def setup(this):
         this.points = this._receivedData['points']
-        this.tick = 1
+        this.game.tick = 1
 
     def update(this):
         if this.i == 2:
-            return SinglePlayerGameState()
+            this.game.start(SinglePlayerGameState)
         this.i += 1
         screen = "\n" * 12
         text = 'score: ' + str(this.points)
         space = int((80 - len(text))/2)
         screen += " " * space  + text
-        this.render(screen)
+        this.game.render(screen)
 
 class ScoreState(State):
 
     i = 0
     def setup(this):
         this.playerScores = this._receivedData['scores']
-        this.tick = 1
+        this.game.tick = 1
 
     def update(this):
         score1 = this.playerScores[0]
         score2 = this.playerScores[1]
         if this.i == 2:
-            return MultiplayerGameState(this._receivedData)
+            this.game.start(MultiplayerGameState, this._receivedData)
         if score1 == 5:
-            return FinalState({'winner':1})
+            this.game.start(FinalState, {'winner':1})
         elif score2 == 5:
-            return FinalState({'winner':2})
+            this.game.start(FinalState, {'winner':2})
         this.i += 1
         screen = "\n" * 12
         text = str(score1) + " - " + str(score2)
         space = int((80 - len(text))/2)
         screen += " " * space  + text
-        this.render(screen)
+        this.game.render(screen)
 
 
 class SinglePlayerGameState(State):
@@ -122,13 +121,13 @@ class SinglePlayerGameState(State):
             this.p2=18
         if this.x==this.width-2:
             this.right=False
-            this.tick+=1
+            this.game.tick+=1
         elif this.x==1:
             this.right=True
             if this.y>this.p1+4 or this.y<this.p1:
                 return(2)
             else:
-                this.tick+=1
+                this.game.tick+=1
                 this.points+=1
         if this.right==True:
             this.x+=this.velx
@@ -147,7 +146,7 @@ class SinglePlayerGameState(State):
     #della inizializzazione dello stato
     def setup(this):
         #imposta la velocita di gioco a 20 tick al secondo
-        this.tick = 10
+        this.game.tick = 10
         this.velx=1
         this.vely=1
         this.p1=0
@@ -159,9 +158,9 @@ class SinglePlayerGameState(State):
     def update(this):
         winner = this.logic()
         if winner==2:
-            return PointsState({'points':this.points})
+            this.game.start(PointsState, {'points':this.points})
         screen=this.genstr(this.p1,this.p2,this.x,this.y)
-        this.render(screen)
+        this.game.render(screen)
     def onEvent(this, ch):
         #player 1
         if ch == 'up' or ch == 'w':
@@ -210,13 +209,13 @@ class MultiplayerGameState(State):
             if this.y>this.p2+4 or this.y<this.p2:
                 return(1)
             else:
-                this.tick+=1
+                this.game.tick+=1
         elif this.x==1:
             this.right=True
             if this.y>this.p1+4 or this.y<this.p1:
                 return(2)
             else:
-                this.tick+=1
+                this.game.tick+=1
         if this.right==True:
             this.x+=this.velx
         else:
@@ -235,22 +234,22 @@ class MultiplayerGameState(State):
     def setup(this):
         #imposta la velocita di gioco a 20 tick al secondo
         this.playerScores = this._receivedData['scores']
-        this.tick = 10
-        this.velx=1
-        this.vely=1
-        this.p1=0
-        this.p2=0
-        this.x=39
-        this.y=10
+        this.game.tick = 10
+        # this.velx=1
+        # this.vely=1
+        # this.p1=0
+        # this.p2=0
+        # this.x=39
+        # this.y=10
 
     #questa funzione viene chiamata un botto di volte al secondo
     def update(this):
         winner = this.logic()
         if winner:
             this.playerScores[winner-1] += 1
-            return ScoreState({'scores':this.playerScores})
+            this.game.start(ScoreState, {'scores':this.playerScores})
         screen=this.genstr(this.p1,this.p2,this.x,this.y)
-        this.render(screen)
+        this.game.render(screen)
 
     #questa funzione viene chiamata quando un tasto viene schiacciato
     def onEvent(this, ch):
@@ -281,8 +280,8 @@ class MenuState(State):
         ]
     selected=0
     def setup(this):
-        this.render("")
-        this.tick = 20
+        this.game.render("")
+        this.game.tick = 20
 
     def update(this):
         screen = '\n' * 9
@@ -299,7 +298,7 @@ class MenuState(State):
         spaces = int((80 - len(desc))/2)
         screen += '\n' * 6 + ' '*spaces + desc
             
-        this.render(screen)
+        this.game.render(screen)
 
     def onEvent(this, ch):
         if ch=='up':
@@ -315,12 +314,11 @@ class MenuState(State):
 
         if ch == " " or ch == "enter":
             if this.selected==0:
-                return SinglePlayerGameState()
-                # return ScoreState({'scores':[0,0]})
+                this.game.start(SinglePlayerGameState)
             if this.selected==1:
-                return MultiplayerGameState({'scores':[0,0]})
+                this.game.start(MultiplayerGameState, {'scores':[0,0]} )
             if this.selected==2:
-                raise SystemExit
+                this.game.stop()
         
 
 
@@ -349,7 +347,7 @@ class InitialState(State):
     hexColors = ['a','b','c','d','e','f']
 
     def setup(this):
-        this.tick = 2
+        this.game.tick = 2
 
     def update(this):
         screen = "\n" * 3
@@ -362,7 +360,7 @@ class InitialState(State):
                     this.currentColor = 0
             else:
                 this.color = True
-            os.system("color 0" + this.hexColors[this.currentColor])
+            this.game.setColor("0" + this.hexColors[this.currentColor])
             this.on = False
             text = "PRESS SPACE TO START  "
         else:
@@ -371,9 +369,9 @@ class InitialState(State):
 
         btText = "\n" * 4 + " " * int((80 - len(text)) /2)
         btText += text
-        this.render(screen+btText)
+        this.game.render(screen+btText)
 
     def onEvent(this, ch):
         if ch == " ":
-            return MenuState()
+            this.game.start(MenuState)
 
