@@ -15,6 +15,6 @@ class State:
     def update(this):
         pass
 
-    def onEvent(this, ch):
+    def keyPress(this, ch):
         pass
 

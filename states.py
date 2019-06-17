@@ -23,7 +23,6 @@ class FinalState(State):
     def setup(this):
         this.winner = this._receivedData['winner']
         this.game.tick=2
-        this.currentColor=0
         
     def update(this):
         screen = this.asciiart
@@ -34,7 +33,7 @@ class FinalState(State):
         this.currentColor+=1
         this.currentColor%=6
 
-    def onEvent(this, ch):
+    def keyPress(this, ch):
         if ch == ' ':
             this.game.start(InitialState)
 
@@ -147,12 +146,6 @@ class SinglePlayerGameState(State):
     def setup(this):
         #imposta la velocita di gioco a 20 tick al secondo
         this.game.tick = 10
-        this.velx=1
-        this.vely=1
-        this.p1=0
-        this.p2=0
-        this.x=39
-        this.y=10
 
     #questa funzione viene chiamata un botto di volte al secondo
     def update(this):
@@ -161,7 +154,7 @@ class SinglePlayerGameState(State):
             this.game.start(PointsState, {'points':this.points})
         screen=this.genstr(this.p1,this.p2,this.x,this.y)
         this.game.render(screen)
-    def onEvent(this, ch):
+    def keyPress(this, ch):
         #player 1
         if ch == 'up' or ch == 'w':
             if this.p1 > 0: this.p1 -= 1
@@ -235,12 +228,6 @@ class MultiplayerGameState(State):
         #imposta la velocita di gioco a 20 tick al secondo
         this.playerScores = this._receivedData['scores']
         this.game.tick = 10
-        # this.velx=1
-        # this.vely=1
-        # this.p1=0
-        # this.p2=0
-        # this.x=39
-        # this.y=10
 
     #questa funzione viene chiamata un botto di volte al secondo
     def update(this):
@@ -252,7 +239,7 @@ class MultiplayerGameState(State):
         this.game.render(screen)
 
     #questa funzione viene chiamata quando un tasto viene schiacciato
-    def onEvent(this, ch):
+    def keyPress(this, ch):
         #player 1
         if ch == 'w':
             if this.p1 > 0: this.p1 -= 1
@@ -300,7 +287,7 @@ class MenuState(State):
             
         this.game.render(screen)
 
-    def onEvent(this, ch):
+    def keyPress(this, ch):
         if ch=='up':
             if this.selected > 0:
                 this.selected-=1
@@ -371,7 +358,7 @@ class InitialState(State):
         btText += text
         this.game.render(screen+btText)
 
-    def onEvent(this, ch):
+    def keyPress(this, ch):
         if ch == " ":
             this.game.start(MenuState)
 
