@@ -2,15 +2,33 @@ import msvcrt
 import os
 import time
 import winsound
-from state import State
 
+#
+# this is a state-based, lightweight game library
+# for python cli applications on windows.
+# this library has been tested and works on windows 10,8,7 and xp
+# game methods:
+# - start(stateClass, data)
+# - pause()
+# - stop()
+# - note(frequency, duration)
+# - clear()
+# - render(string)
+#
+# the stateClass passed as parameter for the game.start method should have
+# the following methods:
+# - __init__(this, gameObject, optionalData)
+# - update()
+# - keyPress(ch)
+#
 class Game:
     #the current state object
     state = False
     #a boolean that controls the game infinite loop
     _isRunning = False
-    #data to handle key input
+    #boolean variable used to handle arrow inputs (see the keyPress method)
     _isArrow = False
+    #keywords that facilitate input handling in game states
     _arrows = {
         72: "up",
         80: "down",
@@ -57,6 +75,9 @@ class Game:
         this.state = False
         raise SystemExit
 
+    #plays a note with the given frequency and time.
+    #note: the note function will completely pause the game until it stops playing,
+    #so in order to avoid lag, notes and the gametick should be scheduled accordingly
     def note(this, note, t):
         if t < this._millis:
             this._millis -= t
