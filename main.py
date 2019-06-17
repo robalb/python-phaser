@@ -6,7 +6,8 @@ from game import Game
 options = {
         'width': 80,
         'height': 25,
-        'tick': 100
+        'tick': 100,
+        'title': 'python pong'
         }
 #initialize the game object
 game = Game(options)

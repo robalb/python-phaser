@@ -23,8 +23,10 @@ class Game:
     #a string containing the current data to draw on screen
     _screenBuffer = False
 
-    def __init__(this, options = { 'width': 80, 'height': 25, 'tick': 25 }):
-        this.width, this.height, this.tick = options.values()
+    def __init__(this, options = { 'width': 80, 'height': 25, 'tick': 25, 'title': False }):
+        this.width, this.height, this.tick, title = options.values()
+        #set the window title
+        if title: os.system("title " + title)
         #set the window size to the current game size
         os.system("mode con: cols="+str(this.width)+" lines="+str(this.height))
 
