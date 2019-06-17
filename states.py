@@ -51,7 +51,7 @@ class PointsState(State):
         this.i += 1
         screen = "\n" * 12
         text = 'score: ' + str(this.points)
-        space = int((80 - len(text))/2)
+        space = int((this.game.width - len(text))/2)
         screen += " " * space  + text
         this.game.render(screen)
 
@@ -74,7 +74,7 @@ class ScoreState(State):
         this.i += 1
         screen = "\n" * 12
         text = str(score1) + " - " + str(score2)
-        space = int((80 - len(text))/2)
+        space = int((this.game.width - len(text))/2)
         screen += " " * space  + text
         this.game.render(screen)
 
@@ -89,10 +89,6 @@ class SinglePlayerGameState(State):
     points=0
     down=True
     right=True
-    width = 80
-    #bisogna lasciare una riga vuota
-    #altrimenti la console va a capo e si perde la prima riga
-    height = 23
     paddleHeight = 5
     counter=0
     def genstr(this,p1,p2,x,y):
@@ -141,9 +137,14 @@ class SinglePlayerGameState(State):
         else:
             this.y-=this.vely
         return False
+
     #questa funzione viene chiamata solo una volta, al momento
     #della inizializzazione dello stato
     def setup(this):
+        this.width = this.game.width
+        #bisogna lasciare una riga vuota
+        #altrimenti la console va a capo e si perde la prima riga
+        this.height = this.game.height - 2
         #imposta la velocita di gioco a 20 tick al secondo
         this.game.tick = 10
 
@@ -172,10 +173,6 @@ class MultiplayerGameState(State):
     y=10
     down=True
     right=True
-    width = 80
-    #bisogna lasciare una riga vuota
-    #altrimenti la console va a capo e si perde la prima riga
-    height = 23
     paddleHeight = 5
     counter=0
     def genstr(this,p1,p2,x,y):
@@ -225,6 +222,10 @@ class MultiplayerGameState(State):
     #questa funzione viene chiamata solo una volta, al momento
     #della inizializzazione dello stato
     def setup(this):
+        this.width = this.game.width
+        #bisogna lasciare una riga vuota
+        #altrimenti la console va a capo e si perde la prima riga
+        this.height = this.game.height - 2
         #imposta la velocita di gioco a 20 tick al secondo
         this.playerScores = this._receivedData['scores']
         this.game.tick = 10
@@ -282,7 +283,7 @@ class MenuState(State):
             screen += ' ' + this.opt1[i] + '\n\n'
             
         desc = this.descr[this.selected]
-        spaces = int((80 - len(desc))/2)
+        spaces = int((this.game.width - len(desc))/2)
         screen += '\n' * 6 + ' '*spaces + desc
             
         this.game.render(screen)
@@ -354,7 +355,7 @@ class InitialState(State):
             this.on = True
             text = "  "
 
-        btText = "\n" * 4 + " " * int((80 - len(text)) /2)
+        btText = "\n" * 4 + " " * int((this.game.width - len(text)) /2)
         btText += text
         this.game.render(screen+btText)
 

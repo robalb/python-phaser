@@ -25,6 +25,8 @@ class Game:
 
     def __init__(this, options = { 'width': 80, 'height': 25, 'tick': 25 }):
         this.width, this.height, this.tick = options.values()
+        #set the window size to the current game size
+        os.system("mode con: cols="+str(this.width)+" lines="+str(this.height))
 
     #method called to start a state or unpause the game
     #param: the first state class
@@ -85,6 +87,9 @@ class Game:
             this._millis = millis
             this.state.update()
 
+    #internal method that calls the keypress method of the current state, passing the
+    #input letter as a char or, in case of a non ascii input such as left,right or esc, as a 
+    #string describing the input
     def _keyPress(this, ch):
         asc = ord(ch)
         if this._isArrow:

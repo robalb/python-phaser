@@ -18,3 +18,12 @@ class State:
     def keyPress(this, ch):
         pass
 
+
+#a template class that provides useful text gui methods
+class StateGui(State):
+
+    def centered(text):
+        return text
+
+    def centeredList(textList):
+        return textList

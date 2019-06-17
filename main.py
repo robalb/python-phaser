@@ -2,13 +2,15 @@
 from states import *
 from game import Game
 
+#note: widths greater that 80 are only allowed in windows 10
 options = {
         'width': 80,
         'height': 25,
         'tick': 100
         }
+#initialize the game object
 game = Game(options)
-# print(game.width, game.height, game.tick) 
+#start the InitialState game state
 game.start(InitialState)
 
 
