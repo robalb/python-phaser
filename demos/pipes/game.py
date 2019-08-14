@@ -153,4 +153,3 @@ class Game:
                 this.state.keyPress(this._keys[asc])
             else:
                 this.state.keyPress(chr(asc))
-
