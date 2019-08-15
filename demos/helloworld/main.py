@@ -9,7 +9,7 @@ options = {
         'width': 80,
         'height': 25,
         'tick': 100,
-        'title': 'python pong'
+        'title': 'hello world demo'
         }
 #initialize the game object
 game = Game(options)

@@ -347,52 +347,16 @@ class MenuState(State):
 
 class InitialState(State):
 
-    asciiArt3 = """
-             _______  __   __  _______  __   __  _______  __    _ 
-            |       ||  | |  ||       ||  | |  ||       ||  |  | |
-            |    _  ||  |_|  ||_     _||  |_|  ||   _   ||   |_| |
-            |   |_| ||       |  |   |  |       ||  | |  ||       |
-            |    ___||_     _|  |   |  |       ||  |_|  ||  _    |
-            |   |      |   |    |   |  |   _   ||       || | |   |
-            |___|      |___|    |___|  |__| |__||_______||_|  |__|
-                     _______  _______  __    _  _______           
-                    |       ||       ||  |  | ||       |          
-                    |    _  ||   _   ||   |_| ||    ___|          
-                    |   |_| ||  | |  ||       ||   | __           
-                    |    ___||  |_|  ||  _    ||   ||  |          
-                    |   |    |       || | |   ||   |_| |          
-                    |___|    |_______||_|  |__||_______|          
-    """
-
-    on = True
-    color = True
-    currentColor = 0
-    hexColors = ['a','b','c','d','e','f']
 
     def setup(this):
         this.game.tick = 2
 
     def update(this):
-        screen = "\n" * 3
-        screen += this.asciiArt3
-        if this.on:
-            if this.color:
-                this.color = False
-                this.currentColor +=1
-                if this.currentColor ==  len(this.hexColors):
-                    this.currentColor = 0
-            else:
-                this.color = True
-            this.game.setColor("0" + this.hexColors[this.currentColor])
-            this.on = False
-            text = "PRESS SPACE TO START  "
-        else:
-            this.on = True
-            text = "  "
-
-        btText = "\n" * 4 + " " * ( (this.game.width - len(text))  // 2)
-        btText += text
-        this.game.render(screen+btText)
+        w = this.game.width // 2
+        h = this.game.height // 2
+        text1 = 'hello world'
+        text2 = 'press space to start the animation'
+        this.game.printAt(w - len(text1)//2, h + 1, text1)
 
     def keyPress(this, ch):
         if ch == " " or ch == "enter":

@@ -96,6 +96,11 @@ class Game:
     def setColor(this, color):
         os.system("color "+color)
 
+    #execute cmd command
+    def cmd(this, cmd):
+        os.system(cmd)
+        this.clear()
+
     #clear the screen
     def clear(this):
         os.system("cls")
@@ -148,3 +153,4 @@ class Game:
                 this.state.keyPress(this._keys[asc])
             else:
                 this.state.keyPress(chr(asc))
+
