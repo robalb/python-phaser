@@ -123,15 +123,11 @@ class PipesState(State):
         newDirection = this.directions[newDirectionIndex]
         #check that the new direction is not the same
         #or the opposite of the current one
-        isGood = True
         for oppositePair in this.oppositeDirections:
             if newDirection in oppositePair and currentDirection in oppositePair:
-                isGood = False
-                break
+                return false
 
-        if isGood:
-            return newDirection
-        return False
+        return newDirection
 
 
     def update(this):
